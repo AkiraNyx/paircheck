@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="PairCheck 双表核对：在浏览器本地找出两份 CSV 的缺失记录与金额差异，支持离线使用与异常报告导出。">
+  <meta name="color-scheme" content="light">
+  <title>PairCheck · 让两份表，对得上</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23253624'/%3E%3Cpath d='M8 9h7v14H8zm9 0h7v14h-7z' fill='%23d8ed84'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="styles.css">
+  <script src="engine.js" defer></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#workbench">跳到核对工具</a>
+  <header class="nav wrap">
+    <a class="brand" href="#"><span class="brand-mark" aria-hidden="true">Ⅱ</span> PairCheck<span class="brand-cn">双表核对</span></a>
+    <nav aria-label="主导航"><a href="#how">怎么核对</a><a href="#service">定制服务</a><a class="nav-cta" href="#workbench">开始核对 <span aria-hidden="true">↗</span></a></nav>
+  </header>
+  <main>
+    <section class="hero wrap" aria-labelledby="hero-title">
+      <div class="hero-copy">
+        <p class="eyebrow"><span class="live-dot" aria-hidden="true"></span> LOCAL FIRST · FREE TOOL</p>
+        <h1 id="hero-title">两份表。<br>差在哪，<span class="highlight">一眼见。</span></h1>
+        <p class="intro">导出表、收款表，换个顺序就看花了眼？<br>按编号核对金额，把缺失和差异单独拎出来。</p>
+        <div class="hero-actions"><a class="button primary" href="#workbench">打开双表核对 <span aria-hidden="true">↘</span></a><button class="button text-button" type="button" id="hero-demo">先看一个例子 <span aria-hidden="true">→</span></button></div>
+        <p class="privacy-line"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 7V5a4 4 0 0 1 8 0v2M3 7h10v7H3z"/></svg> CSV 在你的浏览器里处理，文件不会上传。</p>
+      </div>
+      <div class="hero-visual" aria-label="合成示例：编号 0002 在两张表中相差 3 元">
+        <div class="visual-top"><span>THE DIFFERENCE IS IN THE DETAILS</span><span>01 / 03</span></div>
+        <div class="paper paper-left"><span class="paper-label">A / 订单导出</span><div class="paper-head"><span>编号</span><span>金额</span></div><div class="paper-row"><span>0001</span><span>199.00</span></div><div class="paper-row marked"><span>0002</span><span>88.50</span></div><div class="paper-row"><span>0003</span><span>39.90</span></div><div class="paper-row"><span>0004</span><span>12.00</span></div></div>
+        <div class="paper paper-right"><span class="paper-label">B / 收款导出</span><div class="paper-head"><span>编号</span><span>金额</span></div><div class="paper-row"><span>0004</span><span>12.00</span></div><div class="paper-row marked"><span>0002</span><span>85.50</span></div><div class="paper-row"><span>0001</span><span>199.00</span></div><div class="paper-row"><span>0005</span><span>49.00</span></div></div>
+        <div class="difference"><span>同一编号，金额不同</span><strong>3.00 <small>差额</small></strong><span class="difference-id"># 0002</span></div>
+        <p class="visual-caption">合成数据演示 / 原始编号与金额都保留</p>
+      </div>
+    </section>
+    <div class="principles wrap"><span><b>01</b> 编号匹配，不怕行序不同</span><span><b>02</b> 十进制比较，保留金额精度</span><span><b>03</b> 异常导出，回到原表复核</span></div>
+
+    <section id="workbench" class="workbench-section" aria-labelledby="workbench-title">
+      <div class="wrap">
+        <div class="section-title"><div><p class="eyebrow">THE WORKBENCH</p><h2 id="workbench-title">把两份表放在这里。</h2></div><button id="load-demo" class="button secondary" type="button">载入合成样例 <span aria-hidden="true">↗</span></button></div>
+        <p class="section-note">逗号分隔 CSV · 每份最多 5 MB / 20,000 条记录 · 第一行是表头 · 一行一个唯一编号</p>
+        <div class="upload-grid">
+          <section class="upload-card" aria-labelledby="left-title"><div class="upload-heading"><span class="letter">A</span><h3 id="left-title">左表</h3><span id="left-meta" class="file-meta">尚未选择</span></div>
+            <label class="file-zone" for="left-file"><span class="upload-icon" aria-hidden="true">＋</span><strong>选择第一份 CSV</strong><span>订单导出 / 基准数据</span><input id="left-file" type="file" accept=".csv,text/csv"></label>
+            <div class="encoding-field"><label for="left-encoding">文件编码</label><select id="left-encoding"><option value="utf-8">UTF-8（默认）</option><option value="gb18030">GB18030 / GBK</option></select></div>
+            <div class="mapping"><label>编号列<select id="left-key" disabled><option>先选择文件</option></select></label><label>金额列<select id="left-amount" disabled><option>先选择文件</option></select></label></div>
+          </section>
+          <section class="upload-card" aria-labelledby="right-title"><div class="upload-heading"><span class="letter">B</span><h3 id="right-title">右表</h3><span id="right-meta" class="file-meta">尚未选择</span></div>
+            <label class="file-zone" for="right-file"><span class="upload-icon" aria-hidden="true">＋</span><strong>选择第二份 CSV</strong><span>收款导出 / 待核数据</span><input id="right-file" type="file" accept=".csv,text/csv"></label>
+            <div class="encoding-field"><label for="right-encoding">文件编码</label><select id="right-encoding"><option value="utf-8">UTF-8（默认）</option><option value="gb18030">GB18030 / GBK</option></select></div>
+            <div class="mapping"><label>编号列<select id="right-key" disabled><option>先选择文件</option></select></label><label>金额列<select id="right-amount" disabled><option>先选择文件</option></select></label></div>
+          </section>
+        </div>
+        <div class="run-row"><p>两张表须为同一币种、同一金额口径。<br>重复编号、空编号和无效金额会阻止核对。</p><div class="run-actions"><button id="clear" class="button text-button" type="button">清空</button><button id="compare" class="button primary" type="button" disabled>核对两份表 <span aria-hidden="true">→</span></button></div></div>
+        <p id="message" class="message" role="status" aria-live="polite">没有真实数据？点“载入合成样例”即可体验。</p>
+        <section id="results" class="results" hidden aria-labelledby="results-title">
+          <div class="results-heading"><h3 id="results-title">核对结果</h3><button class="button secondary" type="button" id="export">导出异常 CSV <span aria-hidden="true">↓</span></button></div>
+          <div class="stats"><div><span>一致</span><strong id="count-same">0</strong></div><div><span>金额不同</span><strong id="count-changed">0</strong></div><div><span>仅左表</span><strong id="count-left_only">0</strong></div><div><span>仅右表</span><strong id="count-right_only">0</strong></div></div>
+          <div class="table-toolbar"><p id="result-note"></p><label><input id="show-all" type="checkbox"> 包含一致记录</label></div>
+          <div class="table-scroll" tabindex="0" role="region" aria-label="核对明细，可横向滚动"><table><thead><tr><th scope="col">状态</th><th scope="col">编号</th><th scope="col">左表金额</th><th scope="col">右表金额</th><th scope="col">差额（左减右）</th><th scope="col">原表记录号 A / B</th></tr></thead><tbody id="result-body"></tbody></table></div>
+          <p id="preview-limit" class="section-note"></p>
+        </section>
+      </div>
+    </section>
+
+    <section id="how" class="how wrap" aria-labelledby="how-title"><div class="section-title"><div><p class="eyebrow">THREE STEPS, ONE CLEAR ANSWER</p><h2 id="how-title">核对，留在本地。</h2></div><span class="small-mono">NO SIGNUP. NO UPLOAD.</span></div>
+      <div class="steps"><article><span class="step-number">01 /</span><h3>选择 CSV</h3><p>每份表包含编号与金额。UTF-8 和 GBK 编码均可；Excel 文件请先另存为 CSV。</p></article><article><span class="step-number">02 /</span><h3>指定两列</h3><p>左右表的列名可以不同。编号会去掉首尾空白，但保留前导零、大小写和内部空格。</p></article><article><span class="step-number">03 /</span><h3>逐项看差异</h3><p>缺哪笔、金额差多少，和原表的第几条记录对应。导出全部异常，继续人工复核。</p></article></div>
+      <div class="limits"><h3>先说清核对规则</h3><p>不自动合并重复编号，不推测币种，不拆分退款或手续费。金额须为纯数字十进制，最多 6 位小数；不接受千分位和货币符号。“金额一致”仅代表所选字段相等。记录号包含第一条表头，不是多行字段的物理行号。</p></div>
+    </section>
+
+    <section id="service" class="service wrap" aria-labelledby="service-title"><div class="service-copy"><p class="eyebrow">REPEATABLE LOCAL WORKFLOW</p><h2 id="service-title">这次核对。<br>也为下次交付留好流程。</h2><p>免费网页版可以直接使用。需要在本地 Agent 中复用字段配置，并一条命令生成完整交付目录，可以选择独立的 CSV 核对交付包。</p><a href="downloads/paircheck-offline.zip" class="download-link" download>免费下载网页离线工具包 <span aria-hidden="true">↓</span></a><p class="section-note">解压后打开 index.html，无需安装。</p></div>
+      <article class="offer"><span class="offer-tag">CSV 核对交付包 · Skill</span><div class="price">¥9.90 <span>一次买断 · 完整可编辑</span></div><p>适合可执行本地命令的 Agent，需 Node.js 18+。</p><ul><li>确定性批处理脚本与可复用字段配置</li><li>全部异常与包括一致记录的完整明细</li><li>数量摘要、原始文件 SHA-256 与交付说明</li><li>合成样例及 17 项回归测试</li></ul><a class="button primary" href="https://skillpay.alipay.com/shelf/product?productId=P0806000208856320&amp;merchantCode=akiranyx" target="_blank" rel="noopener noreferrer">在 SkillPay 查看交付包 <span aria-hidden="true">↗</span></a><p class="offer-note">基础网页版和比较引擎免费。付费包提供本地批处理与复核工作流；不会上传核对数据或操作支付账户。</p></article>
+    </section>
+    <section class="faq wrap" aria-labelledby="faq-title"><h2 id="faq-title">几个常见问题</h2><details><summary>文件会被上传或保存吗？</summary><p>核对代码只在浏览器内存中读取 CSV，不向服务端发送内容，也不写入本地存储。清空或关闭页面会移除当前数据；你主动导出的文件会保留在下载目录。在线页面本身由托管方提供，离线包可断网使用。</p></details><details><summary>为什么不直接支持 Excel？</summary><p>第一版只处理逗号分隔 CSV，让过程简单、可检查。请在 Excel 中另存为“CSV UTF-8”；含前导零的编号应在原始导出中保持文本，工具不能恢复已被 Excel 丢掉的零。</p></details><details><summary>结果能作为财务结论吗？</summary><p>这是所选编号与金额字段的确定性比较。核对前请自行确认币种、订单范围、时区、退款、税费与结算口径；平台结算认定仍需结合业务规则复核。</p></details></section>
+  </main>
+  <footer class="wrap"><span class="brand">PairCheck <span class="brand-cn">by AkiraNyx</span></span><span>少一点来回翻表。多一点确定。</span><a href="OFFLINE-README.txt">使用与许可</a></footer>
+  <noscript><p class="message">请启用 JavaScript 后使用本地 CSV 核对功能。</p></noscript>
+</body>
+</html>
