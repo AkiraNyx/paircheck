@@ -4,7 +4,7 @@
 
 **免费工具 · 本地处理 · 无需注册 · MIT 许可**
 
-[下载免费离线包](docs/downloads/paircheck-offline.zip) · [查看合成样例](docs/samples/orders.csv) · [使用与许可](docs/OFFLINE-README.txt)
+[下载免费离线包](https://github.com/AkiraNyx/paircheck/releases/download/v0.1.0/paircheck-offline.zip) · [查看合成样例](docs/samples/orders.csv) · [使用与许可](docs/OFFLINE-README.txt)
 
 ## 能做什么
 
